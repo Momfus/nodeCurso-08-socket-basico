@@ -19,8 +19,16 @@ let io = socketIO(server);
 
 io.on('connection', ( client ) => { // Información y manejo de una conexión (client es información del cliente conectado)    
 
+    // on -> escuchar / emit -> enviar o emitir señal o mensaje
     console.log('Usuario conectado');
     
+    client.emit('enviarMensaje', {
+        
+        usuario: 'Administrador',
+        mensaje: 'Bienvenido a la aplicación'
+
+    });
+
     // Verificar si el cliente se desconecto
     client.on('disconnect', () => {
 
@@ -29,9 +37,26 @@ io.on('connection', ( client ) => { // Información y manejo de una conexión (c
     });
 
     // Escuchar el cliente
-    client.on('enviarMensaje', (mensaje) => {
+    client.on('enviarMensaje', (mensaje, callback) => {
 
         console.log(mensaje);
+     
+        // Para manejar una condición y devolver diferentes resultados al cliente
+        if( mensaje.usuario ) {
+
+            callback({
+                reso: 'Todo salió bien!'
+            }); 
+
+        } else {
+
+            
+            callback({
+                reso: 'Todo salió MAL :('
+            }); 
+
+        }
+
         
 
     });
