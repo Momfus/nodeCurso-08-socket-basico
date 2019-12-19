@@ -15,55 +15,9 @@ const port = process.env.PORT || 3000;
 app.use(express.static(publicPath));
 
 // IO = esta es la comunicación del backend
-let io = socketIO(server); 
+module.exports.io = socketIO(server);  // De esta manera se exporta la variable para usar en el archivo socket.js
+require('./sockets/socket.js'); // Traer el archivo con la configuración de los sockets
 
-io.on('connection', ( client ) => { // Información y manejo de una conexión (client es información del cliente conectado)    
-
-    // on -> escuchar / emit -> enviar o emitir señal o mensaje
-    console.log('Usuario conectado');
-    
-    client.emit('enviarMensaje', {
-        
-        usuario: 'Administrador',
-        mensaje: 'Bienvenido a la aplicación'
-
-    });
-
-    // Verificar si el cliente se desconecto
-    client.on('disconnect', () => {
-
-        console.log('Usuario desconectado');
-
-    });
-
-    // Escuchar el cliente
-    client.on('enviarMensaje', (mensaje, callback) => {
-
-        console.log(mensaje);
-     
-        // Para manejar una condición y devolver diferentes resultados al cliente
-        if( mensaje.usuario ) {
-
-            callback({
-                reso: 'Todo salió bien!'
-            }); 
-
-        } else {
-
-            
-            callback({
-                reso: 'Todo salió MAL :('
-            }); 
-
-        }
-
-        
-
-    });
-
-    
-
-});
 
 server.listen(port, (err) => {
 
